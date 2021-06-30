@@ -1,27 +1,28 @@
 {
-    "name": "latusprojects/latus-plugins",
-    "type": "library",
-    "description": "",
-    "authors": [
-        {
-            "name": "Max Latussek",
-            "email": "latusschnecke@gmail.com"
-        }
-    ],
-    "require": {
-        "php": "^8.0",
-        "laravel/framework": "8.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Latus\\Plugins\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Latus\\Plugins\\PluginsServiceProvider"
-            ]
-        }
+  "name": "latusprojects/latus-plugins",
+  "type": "library",
+  "description": "",
+  "authors": [
+    {
+      "name": "Max Latussek",
+      "email": "latusschnecke@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^8.0",
+    "laravel/framework": "8.*",
+    "latusprojects/latus-model-repositories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Latus\\Plugins\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Latus\\Plugins\\PluginsServiceProvider"
+      ]
+    }
+  }
 }
