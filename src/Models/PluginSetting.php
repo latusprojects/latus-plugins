@@ -4,7 +4,6 @@
 namespace Latus\Plugins\Models;
 
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class PluginSetting extends Model
@@ -17,8 +16,8 @@ class PluginSetting extends Model
         'created_at', 'updated_at'
     ];
 
-    public function plugin(): Collection
+    public function plugin(): Model
     {
-        return $this->belongsTo(Plugin::class)->get();
+        return $this->belongsTo(Plugin::class)->first();
     }
 }
