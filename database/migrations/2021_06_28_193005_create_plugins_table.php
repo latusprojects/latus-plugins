@@ -18,8 +18,8 @@ class CreatePluginsTable extends Migration
             $table->timestamps();
             $table->string('name')->unique();
             $table->tinyInteger('status')->default(0);
-            $table->string('source')->nullable();
-            $table->string('type')->default('composer-package');
+            $table->foreignId('repository_id')->nullable();
+            $table->string('target_version')->nullable();
         });
     }
 

@@ -17,8 +17,8 @@ class PluginService
     public static array $create_validation_rules = [
         'name' => 'required|string|min:5',
         'status' => 'required|integer|between:0,1',
-        'source' => 'sometimes|url|min:5',
-        'type' => 'required|string|min:5'
+        'repository_id' => 'sometimes|exists:composer_repositories,id',
+        'target_version' => 'sometimes|string|min:1'
     ];
 
     public function __construct(
