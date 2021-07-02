@@ -13,6 +13,10 @@ class PluginSetting extends Model
         'plugin_id', 'key', 'value'
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
+
     public function plugin(): Collection
     {
         return $this->belongsTo(Plugin::class)->get();

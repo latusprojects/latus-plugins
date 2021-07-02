@@ -16,6 +16,10 @@ class Plugin extends Model
         'name', 'status', 'source', 'type'
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
+
     public function settings(): Collection
     {
         return $this->hasMany(PluginSetting::class)->get();
