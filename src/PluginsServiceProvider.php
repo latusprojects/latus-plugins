@@ -15,8 +15,10 @@ class PluginsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(PluginRepositoryContract::class, PluginRepository::class);
-
+        if (!$this->app->bound(PluginRepositoryContract::class)) {
+            $this->app->bind(PluginRepositoryContract::class, PluginRepository::class);
+        }
+        
         $this->mergeConfigFrom(__DIR__ . '/../config/latus-plugins.php', 'latus-plugins');
     }
 
