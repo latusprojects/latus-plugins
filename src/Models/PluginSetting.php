@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Latus\Plugins;
+namespace Latus\Plugins\Models;
 
 
 use Illuminate\Database\Eloquent\Collection;
