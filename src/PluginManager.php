@@ -108,6 +108,6 @@ class PluginManager
         self::buildComposerJson();
         self::addRepositoryToComposer(new ComposerRepository(['name' => 'latus-plugins', 'type' => 'path', 'url' => 'plugins']));
         self::addMetapackageToComposer();
-        self::updatePlugin(' latusprojects/local-installations');
+        self::updatePlugin('latusprojects/local-installations');
     }
 }
