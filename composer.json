@@ -10,6 +10,7 @@
   ],
   "require": {
     "php": "^8.0",
+    "composer/composer": "dev-master",
     "laravel/framework": "8.*",
     "latusprojects/latus-model-repositories": "dev-master"
   },
