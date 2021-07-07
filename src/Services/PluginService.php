@@ -4,7 +4,6 @@
 namespace Latus\Plugins\Services;
 
 
-use http\Exception\InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +35,7 @@ class PluginService
         $validator = Validator::make($attributes, self::$create_validation_rules);
 
         if ($validator->fails()) {
-            throw new InvalidArgumentException($validator->errors()->first());
+            throw new \InvalidArgumentException($validator->errors()->first());
         }
 
         return $this->pluginRepository->create($attributes);
