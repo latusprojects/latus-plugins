@@ -69,7 +69,7 @@ class PluginService
         }
     }
 
-    public function find(int|string $id): Model
+    public function find(int|string $id): Model|null
     {
         return $this->pluginRepository->find($id);
     }
