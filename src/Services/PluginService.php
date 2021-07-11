@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository;
 
 class PluginService
@@ -41,25 +42,25 @@ class PluginService
         return $this->pluginRepository->create($attributes);
     }
 
-    public function activatePlugin()
+    public function activatePlugin(Plugin $plugin)
     {
-        $this->pluginRepository->activate();
+        $this->pluginRepository->activate($plugin);
     }
 
-    public function deactivatePlugin()
+    public function deactivatePlugin(Plugin $plugin)
     {
-        $this->pluginRepository->deactivate();
+        $this->pluginRepository->deactivate($plugin);
     }
 
     /**
      * @param bool $deleteFiles
      * @throws FileNotFoundException
      */
-    public function deletePlugin(bool $deleteFiles = false)
+    public function deletePlugin(Plugin $plugin, bool $deleteFiles = false)
     {
-        $plugin_name = $this->pluginRepository->getName();
+        $plugin_name = $this->pluginRepository->getName($plugin);
 
-        $this->pluginRepository->delete();
+        $this->pluginRepository->delete($plugin);
 
         if ($deleteFiles) {
             $files_dir = config('latus-plugins.plugins_dir') . '/' . $plugin_name;

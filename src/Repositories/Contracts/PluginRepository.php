@@ -14,13 +14,13 @@ interface PluginRepository extends Repository
 
     public function __construct(Plugin $plugin);
 
-    public function activate(): void;
+    public function activate(Plugin $plugin): void;
 
-    public function deactivate(): void;
+    public function deactivate(Plugin $plugin): void;
 
-    public function delete();
+    public function delete(Plugin $plugin);
 
-    public function getName(): string;
+    public function getName(Plugin $plugin): string;
 
     public function getAllActive(): Collection;
 
