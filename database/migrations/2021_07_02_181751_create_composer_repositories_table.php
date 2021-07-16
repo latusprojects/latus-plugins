@@ -18,9 +18,9 @@ class CreateComposerRepositoriesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyInteger('status')->default(ComposerRepository::STATUS_ACTIVATED);
-            $table->string('name');
-            $table->string('type')->default('vcs');
-            $table->string('url');
+            $table->string('name')->unique();
+            $table->string('type')->default('composer');
+            $table->string('url')->unique()->nullable();
         });
     }
 
