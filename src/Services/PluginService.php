@@ -71,7 +71,7 @@ class PluginService
         $this->pluginRepository->delete($plugin);
 
         if ($deleteFiles) {
-            $files_dir = config('latus-plugins.plugins_dir') . '/' . $plugin_name;
+            $files_dir = base_path('plugins' . DIRECTORY_SEPARATOR . $plugin_name);
             if (!Storage::deleteDirectory($files_dir)) {
                 throw new FileNotFoundException('Directory "' . $files_dir . '" could not be deleted');
             }
