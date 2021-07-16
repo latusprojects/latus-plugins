@@ -4,8 +4,8 @@
 namespace Latus\Plugins\Models;
 
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plugin extends Model
 {
@@ -23,9 +23,9 @@ class Plugin extends Model
         'created_at', 'updated_at'
     ];
 
-    public function settings(): Collection
+    public function settings(): HasMany
     {
-        return $this->hasMany(PluginSetting::class)->get();
+        return $this->hasMany(PluginSetting::class);
     }
 
     public function repository(): Model
