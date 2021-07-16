@@ -28,7 +28,7 @@ class Plugin extends Model
         return $this->hasMany(PluginSetting::class);
     }
 
-    public function repository(): Model
+    public function repository(): Model|null
     {
         return $this->belongsTo(ComposerRepository::class)->first();
     }
