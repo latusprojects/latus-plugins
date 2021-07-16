@@ -12,7 +12,9 @@
     "php": "^8.0",
     "composer/composer": "^2.1.0",
     "laravel/framework": "8.*",
-    "latusprojects/latus-model-repositories": "dev-master"
+    "latusprojects/latus-model-repositories": "dev-develop",
+    "latusprojects/latus-composer-plugins": "dev-develop",
+    "latusprojects/latus-settings": "dev-develop"
   },
   "autoload": {
     "psr-4": {
