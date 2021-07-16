@@ -78,8 +78,24 @@ class PluginService
         }
     }
 
+    public function updatePlugin(Plugin $plugin, array $attributes)
+    {
+        $validator = Validator::make($attributes, self::$update_validation_rules);
+
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
+
+        $this->pluginRepository->update($plugin, $attributes);
+    }
+
     public function find(int|string $id): Model|null
     {
         return $this->pluginRepository->find($id);
+    }
+
+    public function findByName(string $name): Model|null
+    {
+        return $this->pluginRepository->findByName($name);
     }
 }
