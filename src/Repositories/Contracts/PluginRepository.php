@@ -24,5 +24,7 @@ interface PluginRepository extends Repository
 
     public function getAllActive(): Collection;
 
-    public function findByName(string $name): Model;
+    public function findByName(string $name): Model|null;
+
+    public function update(Plugin $plugin, array $attributes);
 }

@@ -45,8 +45,13 @@ class PluginRepository extends EloquentRepository implements PluginRepositoryCon
         return Plugin::where('status', Plugin::STATUS_ACTIVATED)->get();
     }
 
-    public function findByName(string $name): Model
+    public function findByName(string $name): Model|null
     {
         return Plugin::where('name', $name)->first();
+    }
+
+    public function update(Plugin $plugin, array $attributes)
+    {
+        $plugin->update($attributes);
     }
 }
