@@ -4,8 +4,8 @@
 namespace Latus\Plugins\Models;
 
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComposerRepository extends Model
 {
@@ -20,8 +20,13 @@ class ComposerRepository extends Model
         'created_at', 'updated_at'
     ];
 
-    public function plugins(): Collection
+    public function plugins(): HasMany
     {
-        return $this->hasMany(Plugin::class)->get();
+        return $this->hasMany(Plugin::class);
+    }
+
+    public function themes(): HasMany
+    {
+        return $this->hasMany(Theme::class);
     }
 }
