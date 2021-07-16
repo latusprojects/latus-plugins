@@ -16,7 +16,7 @@ class Plugin extends Model
     public const STATUS_FAILED_UNINSTALL = 4;
 
     protected $fillable = [
-        'name', 'status', 'target_version', 'repository_id'
+        'name', 'status', 'target_version', 'repository_id', 'proxy_name',
     ];
 
     protected $hidden = [

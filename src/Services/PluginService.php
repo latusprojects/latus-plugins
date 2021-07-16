@@ -16,8 +16,16 @@ class PluginService
 
     public static array $create_validation_rules = [
         'name' => 'required|string|min:5',
-        'status' => 'required|integer|between:0,1',
-        'repository_id' => 'sometimes|exists:composer_repositories,id',
+        'proxy_name' => 'sometimes|string|nullable',
+        'status' => 'required|integer|between:0,4',
+        'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
+        'target_version' => 'sometimes|string|min:1'
+    ];
+
+    public static array $update_validation_rules = [
+        'proxy_name' => 'sometimes|string|nullable',
+        'status' => 'sometimes|integer|between:0,4',
+        'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1'
     ];
 
