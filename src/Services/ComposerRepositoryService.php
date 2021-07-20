@@ -18,7 +18,8 @@ class ComposerRepositoryService
         'name' => 'required|string|min:5',
         'status' => 'required|integer|between:0,2',
         'type' => 'sometimes|string|in:composer,vcs,path',
-        'url' => 'required_unless:type,path|url'
+        //TODO: Create validation rule to accept both relative files paths and urls
+        'url' => 'required|string|min:5'
     ];
 
     public function __construct(
