@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Latus\Helpers\Paths;
 use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository;
@@ -35,7 +36,7 @@ class PluginManager
 
     protected static function buildComposerJson()
     {
-        $composer_path = config('latus-plugins.plugins_dir') . '/composer.json';
+        $composer_path = Paths::pluginPath('composer.json');
 
         $data = json_decode(File::get($composer_path));
 

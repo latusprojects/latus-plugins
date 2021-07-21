@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Latus\Helpers\Paths;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository;
 
@@ -71,7 +72,7 @@ class PluginService
         $this->pluginRepository->delete($plugin);
 
         if ($deleteFiles) {
-            $files_dir = base_path('plugins' . DIRECTORY_SEPARATOR . $plugin_name);
+            $files_dir = Paths::pluginPath($plugin_name);
             if (!Storage::deleteDirectory($files_dir)) {
                 throw new FileNotFoundException('Directory "' . $files_dir . '" could not be deleted');
             }

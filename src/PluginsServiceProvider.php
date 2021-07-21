@@ -31,8 +31,6 @@ class PluginsServiceProvider extends ServiceProvider
         if (!$this->app->bound(ThemeRepositoryContract::class)) {
             $this->app->bind(ThemeRepositoryContract::class, ThemeRepository::class);
         }
-
-        $this->mergeConfigFrom(__DIR__ . '/../config/latus-plugins.php', 'latus-plugins');
     }
 
     /**

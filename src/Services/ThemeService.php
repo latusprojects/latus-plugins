@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Latus\Plugins\Models\Theme;
 use Latus\Plugins\Repositories\Contracts\ThemeRepository;
+use Latus\Helpers\Paths;
 
 class ThemeService
 {
@@ -54,7 +55,7 @@ class ThemeService
         $this->themeRepository->delete($theme);
 
         if ($deleteFiles) {
-            $files_dir = base_path('themes' . DIRECTORY_SEPARATOR . $theme_name);
+            $files_dir = Paths::themePath($theme_name);
             if (!Storage::deleteDirectory($files_dir)) {
                 throw new FileNotFoundException('Directory "' . $files_dir . '" could not be deleted');
             }
