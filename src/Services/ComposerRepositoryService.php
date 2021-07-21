@@ -4,11 +4,9 @@
 namespace Latus\Plugins\Services;
 
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Latus\Plugins\Models\Plugin;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Repositories\Contracts\ComposerRepositoryRepository;
 
 class ComposerRepositoryService
@@ -43,32 +41,19 @@ class ComposerRepositoryService
         return $this->composerRepositoryRepository->create($attributes);
     }
 
-    public function activateRepository(Plugin $plugin)
+    public function activateRepository(ComposerRepository $composerRepository)
     {
-        $this->composerRepositoryRepository->activate($plugin);
+        $this->composerRepositoryRepository->activate($composerRepository);
     }
 
-    public function deactivateRepository(Plugin $plugin)
+    public function deactivateRepository(ComposerRepository $composerRepository)
     {
-        $this->composerRepositoryRepository->deactivate($plugin);
+        $this->composerRepositoryRepository->deactivate($composerRepository);
     }
 
-    /**
-     * @param bool $deleteFiles
-     * @throws FileNotFoundException
-     */
-    public function deleteRepository(Plugin $plugin, bool $deleteFiles = false)
+    public function deleteRepository(ComposerRepository $composerRepository)
     {
-        $plugin_name = $this->composerRepositoryRepository->getName($plugin);
-
-        $this->composerRepositoryRepository->delete($plugin);
-
-        if ($deleteFiles) {
-            $files_dir = config('latus-plugins.plugins_dir') . '/' . $plugin_name;
-            if (!Storage::deleteDirectory($files_dir)) {
-                throw new FileNotFoundException('Directory "' . $files_dir . '" could not be deleted');
-            }
-        }
+        $this->composerRepositoryRepository->delete($composerRepository);
     }
 
     public function find(int|string $id): Model|null
