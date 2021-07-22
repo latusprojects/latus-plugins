@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Theme;
 use Latus\Repositories\Contracts\Repository;
+use Latus\UI\Components\Contracts\ModuleComponent;
 
 interface ThemeRepository extends Repository
 {
 
     public function __construct(Theme $theme);
 
-    public function setAsActiveTheme(string $component, Theme $theme);
+    public function setThemeForModule(Theme $theme, ModuleComponent $moduleComponent);
 
     public function delete(Theme $theme);
 
