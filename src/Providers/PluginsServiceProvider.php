@@ -1,6 +1,6 @@
 <?php
 
-namespace Latus\Plugins;
+namespace Latus\Plugins\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Latus\Plugins\Repositories\Contracts\PluginRepository as PluginRepositoryContract;

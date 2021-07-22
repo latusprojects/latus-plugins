@@ -24,7 +24,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Latus\\Plugins\\PluginsServiceProvider"
+        "Latus\\Plugins\\Providers\\PluginsServiceProvider"
       ]
     }
   },
