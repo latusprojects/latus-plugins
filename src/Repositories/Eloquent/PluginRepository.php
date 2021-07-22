@@ -6,6 +6,7 @@ namespace Latus\Plugins\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository as PluginRepositoryContract;
 use Latus\Repositories\EloquentRepository;
@@ -53,5 +54,15 @@ class PluginRepository extends EloquentRepository implements PluginRepositoryCon
     public function update(Plugin $plugin, array $attributes)
     {
         $plugin->update($attributes);
+    }
+
+    public function getComposerRepository(Plugin $plugin): Model
+    {
+        return $plugin->repository()->first();
+    }
+
+    public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository)
+    {
+        $plugin->repository()->associate($composerRepository);
     }
 }

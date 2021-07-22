@@ -54,4 +54,14 @@ class ComposerRepositoryRepository extends EloquentRepository implements Compose
     {
         return ComposerRepository::where('url', $url)->first();
     }
+
+    public function getPlugins(ComposerRepository $composerRepository): Collection
+    {
+        return $composerRepository->plugins()->get();
+    }
+
+    public function getThemes(ComposerRepository $composerRepository): Collection
+    {
+        return $composerRepository->themes()->get();
+    }
 }

@@ -5,6 +5,7 @@ namespace Latus\Plugins\Repositories\Contracts;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Theme;
 use Latus\Repositories\Contracts\Repository;
 
@@ -20,4 +21,8 @@ interface ThemeRepository extends Repository
     public function getName(Theme $theme): string;
 
     public function findByName(string $name): Model|null;
+
+    public function getComposerRepository(Theme $theme): Model;
+
+    public function setComposerRepository(Theme $theme, ComposerRepository $composerRepository);
 }

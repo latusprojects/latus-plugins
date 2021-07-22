@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Theme;
 use Latus\Plugins\Repositories\Contracts\ThemeRepository;
 use Latus\Helpers\Paths;
@@ -71,5 +72,15 @@ class ThemeService
     public function findByName(string $name): Model|null
     {
         return $this->themeRepository->findByName($name);
+    }
+
+    public function getComposerRepository(Theme $theme): Model
+    {
+        return $this->themeRepository->getComposerRepository($theme);
+    }
+
+    public function setComposerRepository(Theme $theme, ComposerRepository $composerRepository)
+    {
+        $this->themeRepository->setComposerRepository($theme, $composerRepository);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Latus\Helpers\Paths;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository;
 
@@ -100,5 +101,15 @@ class PluginService
     public function findByName(string $name): Model|null
     {
         return $this->pluginRepository->findByName($name);
+    }
+
+    public function getComposerRepository(Plugin $plugin): Model
+    {
+        return $this->pluginRepository->getComposerRepository($plugin);
+    }
+
+    public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository)
+    {
+        $this->pluginRepository->setComposerRepository($plugin, $composerRepository);
     }
 }

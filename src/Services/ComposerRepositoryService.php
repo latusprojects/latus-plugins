@@ -5,6 +5,7 @@ namespace Latus\Plugins\Services;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Repositories\Contracts\ComposerRepositoryRepository;
@@ -69,5 +70,15 @@ class ComposerRepositoryService
     public function findByUrl(string|null $url): Model|null
     {
         return $this->composerRepositoryRepository->findByUrl($url);
+    }
+
+    public function getPlugins(ComposerRepository $composerRepository): Collection
+    {
+        return $this->composerRepositoryRepository->getPlugins($composerRepository);
+    }
+
+    public function getThemes(ComposerRepository $composerRepository): Collection
+    {
+        return $this->composerRepositoryRepository->getThemes($composerRepository);
     }
 }
