@@ -5,6 +5,7 @@ namespace Latus\Plugins\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Theme extends Model
 {
@@ -25,8 +26,8 @@ class Theme extends Model
         'supports' => 'array'
     ];
 
-    public function repository(): Model|null
+    public function repository(): BelongsTo
     {
-        return $this->belongsTo(ComposerRepository::class)->first();
+        return $this->belongsTo(ComposerRepository::class);
     }
 }

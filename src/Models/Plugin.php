@@ -5,6 +5,7 @@ namespace Latus\Plugins\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plugin extends Model
@@ -28,8 +29,8 @@ class Plugin extends Model
         return $this->hasMany(PluginSetting::class);
     }
 
-    public function repository(): Model|null
+    public function repository(): BelongsTo
     {
-        return $this->belongsTo(ComposerRepository::class)->first();
+        return $this->belongsTo(ComposerRepository::class);
     }
 }
