@@ -21,6 +21,7 @@ class ThemeService
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',
         'supports' => 'required|array|min:1',
+        'current_version' => 'sometimes|string|min:1'
     ];
 
     public function __construct(

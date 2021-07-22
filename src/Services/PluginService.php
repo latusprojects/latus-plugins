@@ -20,14 +20,16 @@ class PluginService
         'proxy_name' => 'sometimes|string|nullable',
         'status' => 'required|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
-        'target_version' => 'sometimes|string|min:1'
+        'target_version' => 'sometimes|string|min:1',
+        'current_version' => 'sometimes|string|min:1'
     ];
 
     public static array $update_validation_rules = [
         'proxy_name' => 'sometimes|string|nullable',
         'status' => 'sometimes|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
-        'target_version' => 'sometimes|string|min:1'
+        'target_version' => 'sometimes|string|min:1',
+        'current_version' => 'sometimes|string|min:1'
     ];
 
     public function __construct(

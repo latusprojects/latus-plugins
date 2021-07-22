@@ -21,6 +21,7 @@ class CreateThemesTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->foreignId('repository_id')->nullable();
             $table->string('target_version')->nullable();
+            $table->string('current_version')->nullable();
         });
     }
 
