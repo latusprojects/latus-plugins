@@ -6,6 +6,9 @@ namespace Latus\Plugins\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
+use Latus\Helpers\Paths;
+use Latus\Plugins\Composer\ProxyPackage;
 use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository as PluginRepositoryContract;
@@ -64,5 +67,18 @@ class PluginRepository extends EloquentRepository implements PluginRepositoryCon
     public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository)
     {
         $plugin->repository()->associate($composerRepository);
+    }
+
+    public function rollbackMigrations(Plugin $plugin)
+    {
+        $migrations_path = Paths::pluginPath(
+            ProxyPackage::PREFIX . $plugin->name . DIRECTORY_SEPARATOR .
+            'database' . DIRECTORY_SEPARATOR . 'migrations'
+        );
+
+
+        if (file_exists($migrations_path)) {
+            Artisan::call('migrate:rollback', ['--path' => $migrations_path]);
+        }
     }
 }

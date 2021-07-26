@@ -112,4 +112,9 @@ class PluginService
     {
         $this->pluginRepository->setComposerRepository($plugin, $composerRepository);
     }
+
+    public function rollbackMigrationsOfPlugin(Plugin $plugin)
+    {
+        $this->pluginRepository->rollbackMigrations($plugin);
+    }
 }
