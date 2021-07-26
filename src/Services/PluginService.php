@@ -8,6 +8,9 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Latus\Helpers\Paths;
+use Latus\Plugins\Models\ComposerRepository;
+use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository;
 
 class PluginService
@@ -15,9 +18,19 @@ class PluginService
 
     public static array $create_validation_rules = [
         'name' => 'required|string|min:5',
-        'status' => 'required|integer|between:0,1',
-        'repository_id' => 'sometimes|exists:composer_repositories,id',
-        'target_version' => 'sometimes|string|min:1'
+        'proxy_name' => 'sometimes|string|nullable',
+        'status' => 'required|integer|between:0,4',
+        'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
+        'target_version' => 'sometimes|string|min:1',
+        'current_version' => 'sometimes|string|min:1'
+    ];
+
+    public static array $update_validation_rules = [
+        'proxy_name' => 'sometimes|string|nullable',
+        'status' => 'sometimes|integer|between:0,4',
+        'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
+        'target_version' => 'sometimes|string|min:1',
+        'current_version' => 'sometimes|string|min:1'
     ];
 
     public function __construct(
@@ -41,36 +54,67 @@ class PluginService
         return $this->pluginRepository->create($attributes);
     }
 
-    public function activatePlugin()
+    public function activatePlugin(Plugin $plugin)
     {
-        $this->pluginRepository->activate();
+        $this->pluginRepository->activate($plugin);
     }
 
-    public function deactivatePlugin()
+    public function deactivatePlugin(Plugin $plugin)
     {
-        $this->pluginRepository->deactivate();
+        $this->pluginRepository->deactivate($plugin);
     }
 
     /**
      * @param bool $deleteFiles
      * @throws FileNotFoundException
      */
-    public function deletePlugin(bool $deleteFiles = false)
+    public function deletePlugin(Plugin $plugin, bool $deleteFiles = false)
     {
-        $plugin_name = $this->pluginRepository->getName();
+        $plugin_name = $this->pluginRepository->getName($plugin);
 
-        $this->pluginRepository->delete();
+        $this->pluginRepository->delete($plugin);
 
         if ($deleteFiles) {
-            $files_dir = config('latus-plugins.plugins_dir') . '/' . $plugin_name;
+            $files_dir = Paths::pluginPath($plugin_name);
             if (!Storage::deleteDirectory($files_dir)) {
                 throw new FileNotFoundException('Directory "' . $files_dir . '" could not be deleted');
             }
         }
     }
 
+    public function updatePlugin(Plugin $plugin, array $attributes)
+    {
+        $validator = Validator::make($attributes, self::$update_validation_rules);
+
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
+
+        $this->pluginRepository->update($plugin, $attributes);
+    }
+
     public function find(int|string $id): Model|null
     {
         return $this->pluginRepository->find($id);
+    }
+
+    public function findByName(string $name): Model|null
+    {
+        return $this->pluginRepository->findByName($name);
+    }
+
+    public function getComposerRepository(Plugin $plugin): Model
+    {
+        return $this->pluginRepository->getComposerRepository($plugin);
+    }
+
+    public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository)
+    {
+        $this->pluginRepository->setComposerRepository($plugin, $composerRepository);
+    }
+
+    public function rollbackMigrationsOfPlugin(Plugin $plugin)
+    {
+        $this->pluginRepository->rollbackMigrations($plugin);
     }
 }

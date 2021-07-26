@@ -6,6 +6,10 @@ namespace Latus\Plugins\Repositories\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
+use Latus\Helpers\Paths;
+use Latus\Plugins\Composer\ProxyPackage;
+use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Repositories\Contracts\PluginRepository as PluginRepositoryContract;
 use Latus\Repositories\EloquentRepository;
@@ -18,26 +22,26 @@ class PluginRepository extends EloquentRepository implements PluginRepositoryCon
         parent::__construct($plugin);
     }
 
-    public function activate(): void
+    public function activate(Plugin $plugin): void
     {
-        $this->model->status = Plugin::STATUS_ACTIVATED;
-        $this->model->save();
+        $plugin->status = Plugin::STATUS_ACTIVATED;
+        $plugin->save();
     }
 
-    public function deactivate(): void
+    public function deactivate(Plugin $plugin): void
     {
-        $this->model->status = Plugin::STATUS_DEACTIVATED;
-        $this->model->save();
+        $plugin->status = Plugin::STATUS_DEACTIVATED;
+        $plugin->save();
     }
 
-    public function delete()
+    public function delete(Plugin $plugin)
     {
-        $this->model->delete();
+        $plugin->delete();
     }
 
-    public function getName(): string
+    public function getName(Plugin $plugin): string
     {
-        return $this->model->name;
+        return $plugin->name;
     }
 
     public function getAllActive(): Collection
@@ -45,8 +49,36 @@ class PluginRepository extends EloquentRepository implements PluginRepositoryCon
         return Plugin::where('status', Plugin::STATUS_ACTIVATED)->get();
     }
 
-    public function findByName(string $name): Model
+    public function findByName(string $name): Model|null
     {
         return Plugin::where('name', $name)->first();
+    }
+
+    public function update(Plugin $plugin, array $attributes)
+    {
+        $plugin->update($attributes);
+    }
+
+    public function getComposerRepository(Plugin $plugin): Model
+    {
+        return $plugin->repository()->first();
+    }
+
+    public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository)
+    {
+        $plugin->repository()->associate($composerRepository);
+    }
+
+    public function rollbackMigrations(Plugin $plugin)
+    {
+        $migrations_path = Paths::pluginPath(
+            ProxyPackage::PREFIX . $plugin->name . DIRECTORY_SEPARATOR .
+            'database' . DIRECTORY_SEPARATOR . 'migrations'
+        );
+
+
+        if (file_exists($migrations_path)) {
+            Artisan::call('migrate:rollback', ['--path' => $migrations_path]);
+        }
     }
 }
