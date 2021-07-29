@@ -38,14 +38,22 @@ class ProxyPackage
         return $this->model;
     }
 
-    public function getActualName(): string
+    public function getActualName(bool $formatted = false): string
     {
-        return $this->model->name;
+        return $formatted ? str_replace('/', '%%', $this->model->name) : $this->model->name;
     }
 
-    public function getName(): string
+    public function getName(bool $formatted = false): string
     {
-        return self::PREFIX . $this->getActualName();
+        $name = '';
+
+        if ($this->getRepository()->type === 'path') {
+            $name = $this->getActualName();
+        } else {
+            $name = self::PREFIX . $this->getActualName();
+        }
+
+        return $formatted ? str_replace('/', '%%', $name) : $name;
     }
 
     public function getPackageType(): string
@@ -53,12 +61,39 @@ class ProxyPackage
         return get_class($this->getPackageModel());
     }
 
+    public function getRelativeInstallDir(): string
+    {
+        if ($this->getPackageType() === self::PACKAGE_TYPE_PLUGIN) {
+            if ($this->getRepository()->type === 'path') {
+                return 'plugins' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $this->getName(true);
+            }
+            return 'plugins' . DIRECTORY_SEPARATOR . $this->getName(true);
+        } else {
+            if ($this->getRepository()->type === 'path') {
+
+                return 'themes' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $this->getName(true);
+            }
+            return 'themes' . DIRECTORY_SEPARATOR . $this->getName(true);
+        }
+    }
+
     public function getInstallDir(): string
     {
-        return match ($this->getPackageType()) {
-            self::PACKAGE_TYPE_PLUGIN => Paths::pluginPath($this->getName()),
-            self::PACKAGE_TYPE_THEME => Paths::themePath($this->getName())
-        };
+
+        if ($this->getPackageType() === self::PACKAGE_TYPE_PLUGIN) {
+            if ($this->getRepository()->type === 'path') {
+                return Paths::pluginPath('local' . DIRECTORY_SEPARATOR . $this->getName(true));
+            }
+            return Paths::pluginPath($this->getName(true));
+        } else {
+            if ($this->getRepository()->type === 'path') {
+
+                return Paths::themePath('local' . DIRECTORY_SEPARATOR . $this->getName(true));
+            }
+            return Paths::themePath($this->getName(true));
+        }
+
+
     }
 
 }
