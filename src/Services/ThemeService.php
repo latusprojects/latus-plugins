@@ -25,6 +25,15 @@ class ThemeService
         'current_version' => 'sometimes|string|min:1|nullable'
     ];
 
+    public static array $update_validation_rules = [
+        'proxy_name' => 'sometimes|string|nullable',
+        'status' => 'sometimes|integer|between:0,4',
+        'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
+        'target_version' => 'sometimes|string|min:1',
+        'supports' => 'required|array|min:1',
+        'current_version' => 'sometimes|string|min:1|nullable'
+    ];
+
     public function __construct(
         protected ThemeRepository $themeRepository
     )
@@ -82,5 +91,16 @@ class ThemeService
     public function setComposerRepository(Theme $theme, ComposerRepository $composerRepository)
     {
         $this->themeRepository->setComposerRepository($theme, $composerRepository);
+    }
+
+    public function updateTheme(Theme $theme, array $attributes)
+    {
+        $validator = Validator::make($attributes, self::$update_validation_rules);
+
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
+
+        $this->themeRepository->update($theme, $attributes);
     }
 }
