@@ -57,7 +57,7 @@ class ProxyPackageFileHandler
     {
         $data = json_decode('{}');
         $data->name = $this->proxyPackage->getName();
-        $data->type = 'metapackage';
+        $data->type = 'latus-proxy-' . ($this->proxyPackage->getPackageType() === ProxyPackage::PACKAGE_TYPE_PLUGIN ? 'plugin' : 'theme');
         $data->version = $this->proxyPackage->getPackageModel()->target_version;
         $data->require = json_decode('{}');
         $data->replace = json_decode('{}');
