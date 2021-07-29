@@ -9,7 +9,7 @@ use Illuminate\Console\BufferedConsoleOutput;
 use Latus\Helpers\Paths;
 use Symfony\Component\Console\Input\StringInput;
 
-class CLIInterface
+class CLInterface
 {
 
     protected Application $composer;

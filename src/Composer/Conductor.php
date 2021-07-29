@@ -8,7 +8,7 @@ class Conductor
 {
 
     public function __construct(
-        protected CLIInterface $CLI,
+        protected CLInterface $CLI,
         protected ProxyPackageFileHandler $fileHandler,
     )
     {
