@@ -9,6 +9,7 @@ class CommandResult
     public const CODE_OK = 0;
     public const CODE_UNKNOWN_ERROR = 1;
     public const CODE_DEPENDENCY_ERROR = 2;
+    public const CODE_EXECUTION_ERROR = 3;
 
     public function __construct(
         protected int $code,
