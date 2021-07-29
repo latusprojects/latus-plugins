@@ -17,11 +17,6 @@ use Latus\Repositories\EloquentRepository;
 class PluginRepository extends EloquentRepository implements PluginRepositoryContract
 {
 
-    public function __construct(Plugin $plugin)
-    {
-        parent::__construct($plugin);
-    }
-
     public function activate(Plugin $plugin): void
     {
         $plugin->status = Plugin::STATUS_ACTIVATED;

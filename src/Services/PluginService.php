@@ -22,7 +22,7 @@ class PluginService
         'status' => 'required|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',
-        'current_version' => 'sometimes|string|min:1'
+        'current_version' => 'sometimes|string|min:1|nullable'
     ];
 
     public static array $update_validation_rules = [
@@ -30,7 +30,7 @@ class PluginService
         'status' => 'sometimes|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',
-        'current_version' => 'sometimes|string|min:1'
+        'current_version' => 'sometimes|string|min:1|nullable'
     ];
 
     public function __construct(

@@ -13,9 +13,9 @@
     "composer/composer": "^2.1.0",
     "laravel/framework": "8.*",
     "latusprojects/latus-model-repositories": "0.1.*",
-    "latusprojects/latus-composer-plugins": "dev-develop",
     "latusprojects/latus-settings": "0.1.*",
-    "latusprojects/latus-ui": "0.1.*"
+    "latusprojects/latus-ui": "0.1.*",
+    "latusprojects/latus-helpers": "3.0.*"
   },
   "autoload": {
     "psr-4": {
