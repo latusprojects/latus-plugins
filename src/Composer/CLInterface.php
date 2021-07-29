@@ -24,16 +24,17 @@ class CLInterface
         $this->composer->setAutoExit(false);
     }
 
-    /**
-     * @throws \Exception
-     */
     protected function runCommand(string $command, array $arguments): CommandResult
     {
         $input = new StringInput($command . ' ' . implode(' ', $arguments));
 
         $output = new BufferedConsoleOutput();
 
-        $code = $this->composer->run($input, $output);
+        try {
+            $code = $this->composer->run($input, $output);
+        } catch (\Exception $e) {
+            return new CommandResult(CommandResult::CODE_EXECUTION_ERROR, 'There was an error executing composer. This may be due to missing or invalid permissions on system-level.');
+        }
 
         $result = $output->fetch();
 
@@ -50,9 +51,6 @@ class CLInterface
         $this->currentWorkingDir = $dir;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function addPackage(string $package, string $version): CommandResult
     {
         return $this->runCommand('require', [
@@ -61,9 +59,6 @@ class CLInterface
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function removePackage(string $package): CommandResult
     {
         return $this->runCommand('remove', [
@@ -72,9 +67,6 @@ class CLInterface
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function updatePackage(string $package, string $version): CommandResult
     {
         return $this->runCommand('update', [
@@ -83,27 +75,24 @@ class CLInterface
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function addRepository(string $name, string $type, string $url, bool $symlink = true): CommandResult
+    public function addRepository(string $name, string $type, string $url, bool $symlink = false): CommandResult
     {
-        $options = json_encode([
+        $options = [
             'type' => $type,
-            'url' => $url,
-            'symlink' => $symlink
-        ]);
+            'url' => $url
+        ];
+
+        if ($symlink) {
+            $options['symlink'] = true;
+        }
 
         return $this->runCommand('config', [
             'repositories.' . $name,
-            $options,
+            json_encode($options),
             '--working-dir=' . $this->getWorkingDir()
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function removeRepository(string $name): CommandResult
     {
         return $this->runCommand('config', [
@@ -113,9 +102,6 @@ class CLInterface
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function update(): CommandResult
     {
         return $this->runCommand('update', [
@@ -123,9 +109,6 @@ class CLInterface
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function install(): CommandResult
     {
         return $this->runCommand('install', [
