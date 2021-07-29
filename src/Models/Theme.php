@@ -13,6 +13,7 @@ class Theme extends Model
     public const STATUS_FAILED_INSTALL = 1;
     public const STATUS_FAILED_UPDATE = 2;
     public const STATUS_FAILED_UNINSTALL = 3;
+    public const STATUS_INACTIVE = 4;
 
     protected $fillable = [
         'name', 'supports', 'status', 'repository_id', 'target_version',
