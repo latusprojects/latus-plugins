@@ -12,8 +12,6 @@ use Latus\Repositories\Contracts\Repository;
 interface ComposerRepositoryRepository extends Repository
 {
 
-    public function __construct(ComposerRepository $composerRepository);
-
     public function activate(ComposerRepository $composerRepository): void;
 
     public function deactivate(ComposerRepository $composerRepository): void;

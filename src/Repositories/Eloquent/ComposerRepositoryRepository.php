@@ -13,9 +13,9 @@ use Latus\Repositories\EloquentRepository;
 class ComposerRepositoryRepository extends EloquentRepository implements ComposerRepositoryRepositoryContract
 {
 
-    public function __construct(ComposerRepository $composerRepository)
+    public function relatedModel(): Model
     {
-        parent::__construct($composerRepository);
+        return new ComposerRepository();
     }
 
     public function activate(ComposerRepository $composerRepository): void

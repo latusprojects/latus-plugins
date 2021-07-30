@@ -13,7 +13,7 @@ use Latus\Settings\Services\SettingService;
 interface ThemeRepository extends Repository
 {
 
-    public function __construct(Theme $theme, SettingService $settingService);
+    public function __construct(SettingService $settingService);
 
     public function setAsActiveThemeForModule(Theme $theme, string $moduleContract): bool;
 

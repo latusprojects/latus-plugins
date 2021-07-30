@@ -15,13 +15,15 @@ use Latus\Settings\Services\SettingService;
 class ThemeRepository extends EloquentRepository implements ThemeRepositoryContract
 {
 
-    protected SettingService $settingService;
-
-    public function __construct(Theme $theme, SettingService $settingService)
+    public function __construct(
+        protected SettingService $settingService
+    )
     {
-        parent::__construct($theme);
+    }
 
-        $this->settingService = $settingService;
+    public function relatedModel(): Model
+    {
+        return new Theme();
     }
 
     public function delete(Theme $theme)
