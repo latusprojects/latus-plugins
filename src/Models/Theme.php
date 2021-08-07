@@ -27,6 +27,10 @@ class Theme extends Model
         'supports' => 'array'
     ];
 
+    protected $attributes = [
+        'status' => self::STATUS_INACTIVE,
+    ];
+
     public function repository(): BelongsTo
     {
         return $this->belongsTo(ComposerRepository::class);
