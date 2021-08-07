@@ -24,6 +24,10 @@ class Plugin extends Model
         'created_at', 'updated_at'
     ];
 
+    protected $attributes = [
+        'status' => self::STATUS_DEACTIVATED,
+    ];
+
     public function settings(): HasMany
     {
         return $this->hasMany(PluginSetting::class);
