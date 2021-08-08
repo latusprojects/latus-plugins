@@ -21,7 +21,7 @@ class ThemeService
         'status' => 'required|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',
-        'supports' => 'required|array|min:1',
+        'supports' => 'required|array|min:0',
         'current_version' => 'sometimes|string|min:1|nullable'
     ];
 
@@ -30,7 +30,7 @@ class ThemeService
         'status' => 'sometimes|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',
-        'supports' => 'required|array|min:1',
+        'supports' => 'required|array|min:0',
         'current_version' => 'sometimes|string|min:1|nullable'
     ];
 
