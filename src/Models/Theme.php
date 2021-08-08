@@ -29,6 +29,7 @@ class Theme extends Model
 
     protected $attributes = [
         'status' => self::STATUS_INACTIVE,
+        'supports' => '[]'
     ];
 
     public function repository(): BelongsTo
