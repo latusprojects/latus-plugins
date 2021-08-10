@@ -18,12 +18,23 @@ class ProxyPackage
     public const PREFIX = 'latus-package-';
     public const IGNORED_DEPENDENCIES = [
         'laravel/framework',
-        'latusprojects/latus'
+        'latusprojects/latus',
+        'latusprojects/latus-collections',
+        'latusprojects/latus-composer-plugins',
+        'latusprojects/latus-plugins',
+        'latusprojects/latus-content',
+        'latusprojects/latus-helpers',
+        'latusprojects/latus-installer',
+        'latusprojects/latus-model-repositories',
+        'latusprojects/latus-permissions',
+        'latusprojects/latus-prioritized-providers',
+        'latusprojects/latus-settings',
+        'latusprojects/latus-ui'
     ];
 
     public function __construct(
         protected ComposerRepository $composerRepository,
-        protected Plugin|Theme $model,
+        protected Plugin|Theme       $model,
     )
     {
     }
