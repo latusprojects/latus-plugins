@@ -67,14 +67,6 @@ class CLInterface
         ]);
     }
 
-    public function installPackage(string $package, string $version): CommandResult
-    {
-        return $this->runCommand('install', [
-            '"' . $package . ':' . $version . '"',
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
-    }
-
     public function updatePackage(string $package, string $version): CommandResult
     {
         return $this->runCommand('update', [
@@ -83,20 +75,12 @@ class CLInterface
         ]);
     }
 
-    public function addRepository(string $name, string $type, string $url, bool $symlink = false): CommandResult
+    public function addRepository(string $name, string $type, string $url): CommandResult
     {
-        $options = [
-            'type' => $type,
-            'url' => $url
-        ];
-
-        if ($symlink) {
-            $options['symlink'] = true;
-        }
-
         return $this->runCommand('config', [
             'repositories.' . $name,
-            json_encode($options),
+            $type,
+            $url,
             '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
