@@ -4,6 +4,7 @@
 namespace Latus\Plugins\Composer;
 
 
+use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 use Latus\Plugins\Exceptions\ComposerCLIException;
@@ -16,7 +17,7 @@ class Conductor
     protected bool $hadFailure = false;
 
     public function __construct(
-        protected CLInterface $CLI,
+        protected CLInterface             $CLI,
         protected ProxyPackageFileHandler $fileHandler,
     )
     {
@@ -74,9 +75,16 @@ class Conductor
         }
 
         $this->CLI->setWorkingDir($proxyPackage->getInstallDir());
-        $updateResult = $this->CLI->updatePackage($proxyPackage->getActualName(), $proxyPackage->getPackageModel()->target_version);
 
-        $this->failIfResultHasErrors($updateResult);
+        $result = null;
+
+        if (!InstalledVersions::isInstalled($proxyPackage->getActualName())) {
+            $result = $this->CLI->installPackage($proxyPackage->getActualName(), $proxyPackage->getPackageModel()->target_version);
+        } else {
+            $result = $this->CLI->updatePackage($proxyPackage->getActualName(), $proxyPackage->getPackageModel()->target_version);
+        }
+
+        $this->failIfResultHasErrors($result);
 
         $this->CLI->setWorkingDir(Paths::basePath());
 
