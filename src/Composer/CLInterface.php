@@ -67,6 +67,14 @@ class CLInterface
         ]);
     }
 
+    public function installPackage(string $package, string $version): CommandResult
+    {
+        return $this->runCommand('install', [
+            '"' . $package . ':' . $version . '"',
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
+        ]);
+    }
+
     public function updatePackage(string $package, string $version): CommandResult
     {
         return $this->runCommand('update', [
