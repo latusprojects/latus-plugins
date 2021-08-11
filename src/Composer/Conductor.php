@@ -4,7 +4,6 @@
 namespace Latus\Plugins\Composer;
 
 
-use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 use Latus\Plugins\Exceptions\ComposerCLIException;
@@ -78,10 +77,10 @@ class Conductor
 
         $result = null;
 
-        if (!InstalledVersions::isInstalled($proxyPackage->getActualName())) {
-            $result = $this->CLI->installPackage($proxyPackage->getActualName(), $proxyPackage->getPackageModel()->target_version);
+        if (!File::exists($proxyPackage->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.lock')) {
+            $result = $this->CLI->install();
         } else {
-            $result = $this->CLI->updatePackage($proxyPackage->getActualName(), $proxyPackage->getPackageModel()->target_version);
+            $result = $this->CLI->update();
         }
 
         $this->failIfResultHasErrors($result);
