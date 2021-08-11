@@ -55,7 +55,7 @@ class CLInterface
     {
         return $this->runCommand('require', [
             '"' . $package . ':' . $version . '"',
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
@@ -63,7 +63,7 @@ class CLInterface
     {
         return $this->runCommand('remove', [
             $package,
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
@@ -71,7 +71,7 @@ class CLInterface
     {
         return $this->runCommand('update', [
             '"' . $package . ':' . $version . '"',
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
@@ -89,7 +89,7 @@ class CLInterface
         return $this->runCommand('config', [
             'repositories.' . $name,
             json_encode($options),
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
@@ -98,21 +98,21 @@ class CLInterface
         return $this->runCommand('config', [
             '--unset',
             'repositories.' . $name,
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
     public function update(): CommandResult
     {
         return $this->runCommand('update', [
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
     public function install(): CommandResult
     {
         return $this->runCommand('install', [
-            '--working-dir=' . $this->getWorkingDir()
+            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
         ]);
     }
 
