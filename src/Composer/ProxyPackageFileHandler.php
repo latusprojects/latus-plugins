@@ -77,7 +77,9 @@ class ProxyPackageFileHandler
 
         $contents = json_encode($data);
 
-        File::makeDirectory($this->proxyPackage->getInstallDir(), 0755, true);
+        if (!File::exists($this->proxyPackage->getInstallDir())) {
+            File::makeDirectory($this->proxyPackage->getInstallDir(), 0755, true);
+        }
 
         $this->putFileContents($contents);
     }
