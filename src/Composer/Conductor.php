@@ -90,7 +90,7 @@ class Conductor
         $addRepositoryResult = $this->CLI->addRepository(
             $proxyPackage->getName(),
             'path',
-            $proxyPackage->getRelativeInstallDir()
+            str_replace(DIRECTORY_SEPARATOR, '/', $proxyPackage->getRelativeInstallDir())
         );
 
         $this->failIfResultHasErrors($addRepositoryResult);
