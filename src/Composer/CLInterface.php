@@ -75,13 +75,14 @@ class CLInterface
         ]);
     }
 
-    public function addRepository(string $name, string $type, string $url): CommandResult
+    public function addRepository(string $name, string $type, string $url, bool $symlink = false): CommandResult
     {
+
+        $options = '\'{"type": "' . $type . '", "url": "' . $url . '", "options": {"symlink": ' . $symlink . '}}\'';
+
         return $this->runCommand('config', [
             'repositories.' . $name,
-            $type,
-            $url,
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
+            $options
         ]);
     }
 
