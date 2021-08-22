@@ -126,31 +126,6 @@ class Conductor
         $this->failIfResultHasErrors($addRepositoryResult);
     }
 
-    public function fetchLocalPackageInfo(string $packageType, string $packageName): array|null
-    {
-
-        $packagePathPrefix = match ($packageType) {
-            ProxyPackage::PACKAGE_TYPE_THEME => 'themes' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR,
-            ProxyPackage::PACKAGE_TYPE_PLUGIN => 'plugins' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR,
-        };
-
-        $packageComposerPath = $packagePathPrefix . $packageName . DIRECTORY_SEPARATOR . 'composer.json';
-
-        if (!file_exists($packageComposerPath) || !($composerContent = json_decode(File::get($packageComposerPath)))) {
-            return null;
-        }
-
-        return [
-            'name' => $composerContent->{'name'},
-            'version' => $composerContent->{'version'},
-            'author' => $composerContent->{'author'},
-            'authors' => (array)$composerContent->{'authors'},
-            'description' => $composerContent->{'description'},
-            'repositories' => (array)$composerContent->{'repositories'},
-        ];
-
-    }
-
     /**
      * @throws ComposerCLIException
      */
