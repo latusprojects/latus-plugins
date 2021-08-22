@@ -5,11 +5,38 @@ namespace Latus\Plugins\Composer;
 
 
 use Illuminate\Support\Facades\File;
+use Latus\Helpers\Paths;
 
 class ProxyPackageFileHandler
 {
 
     protected ProxyPackage $proxyPackage;
+
+    public function __construct()
+    {
+        $this->ensureMetaComposerPackagesExist();
+    }
+
+    protected function ensureMetaComposerPackagesExist()
+    {
+        File::ensureDirectoryExists(Paths::pluginPath());
+        File::ensureDirectoryExists(Paths::themePath());
+
+        $fileContentArray = [
+            'name' => '',
+            'type' => 'meta',
+            'require' => []
+        ];
+
+        if (!File::exists(Paths::pluginPath('composer.json'))) {
+            File::put(Paths::pluginPath('composer.json'), json_encode($fileContentArray['name'] = 'latus-packages/plugins'));
+        }
+
+        if (!File::exists(Paths::themePath('composer.json'))) {
+            File::put(Paths::themePath('composer.json'), json_encode($fileContentArray['name'] = 'latus-packages/themes'));
+        }
+
+    }
 
     public function setPackage(ProxyPackage $proxyPackage)
     {
