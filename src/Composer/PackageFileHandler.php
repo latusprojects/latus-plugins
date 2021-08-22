@@ -73,12 +73,12 @@ class PackageFileHandler
 
     protected function getFileContents(): string
     {
-        return File::get($this->package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json');
+        return File::get($this->package->getMetaPackageDir() . 'composer.json');
     }
 
     protected function putFileContents(string $contents)
     {
-        File::put($this->package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json', $contents);
+        File::put($this->package->getMetaPackageDir() . 'composer.json', $contents);
     }
 
 }
