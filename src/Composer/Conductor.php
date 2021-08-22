@@ -27,7 +27,6 @@ class Conductor
      */
     protected function ensureMetaComposerRepositoriesExist()
     {
-        $this->CLI->setWorkingDir(Paths::basePath());
 
         $addRepositoryResult = $this->CLI->addRepository(
             'latus-packages/plugins',
@@ -50,13 +49,31 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
+    protected function ensurePathComposerRepositoryExists()
+    {
+
+        $url = $this->package->getInstallDir(false);
+
+        $addRepositoryResult = $this->CLI->addRepository(
+            $this->package->getName(),
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', $url),
+            true
+        );
+
+        $this->failIfResultHasErrors($addRepositoryResult);
+    }
+
+    /**
+     * @throws ComposerCLIException
+     */
     public function removePackage(Package $package)
     {
+        $this->CLI->setWorkingDir(Paths::basePath());
+
         $this->ensureMetaComposerRepositoriesExist();
 
         $this->package = $package;
-
-        $this->CLI->setWorkingDir(Paths::basePath());
 
         $removePackageResult = $this->CLI->removePackage($package->getName());
         $removeRepositoryResult = $this->CLI->removeRepository($package->getName());
@@ -98,9 +115,10 @@ class Conductor
 
         $this->package = $package;
 
-        if ($package->getRepository()->type !== 'path') {
-            $this->fileHandler->setPackage($package);
-            $this->fileHandler->buildFile();
+        $this->CLI->setWorkingDir(Paths::basePath());
+
+        if ($package->getRepository()->type === 'path') {
+            $this->ensurePathComposerRepositoryExists();
         }
 
         $this->CLI->setWorkingDir($package->getInstallDir());
@@ -120,7 +138,7 @@ class Conductor
         $addRepositoryResult = $this->CLI->addRepository(
             $package->getName(),
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', $package->getRelativeInstallDir())
+            str_replace(DIRECTORY_SEPARATOR, '/', $package->getInstallDir(false))
         );
 
         $this->failIfResultHasErrors($addRepositoryResult);
