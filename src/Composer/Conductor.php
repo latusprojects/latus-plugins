@@ -25,8 +25,34 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
+    protected function ensureMetaComposerRepositoriesExist()
+    {
+        $this->CLI->setWorkingDir(Paths::basePath());
+
+        $addRepositoryResult = $this->CLI->addRepository(
+            'latus-packages/plugins',
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath())
+        );
+
+        $this->failIfResultHasErrors($addRepositoryResult);
+
+        $addRepositoryResult = $this->CLI->addRepository(
+            'latus-packages/themes',
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath())
+        );
+
+        $this->failIfResultHasErrors($addRepositoryResult);
+
+    }
+
+    /**
+     * @throws ComposerCLIException
+     */
     public function removePackage(ProxyPackage $proxyPackage)
     {
+        $this->ensureMetaComposerRepositoriesExist();
 
         $this->proxyPackage = $proxyPackage;
 
@@ -54,6 +80,8 @@ class Conductor
      */
     public function removeRepository(string $repositoryName)
     {
+        $this->ensureMetaComposerRepositoriesExist();
+
         $this->CLI->setWorkingDir(Paths::basePath());
 
         $removeRepositoryResult = $this->CLI->removeRepository($repositoryName);
@@ -66,6 +94,8 @@ class Conductor
      */
     public function installOrUpdatePackage(ProxyPackage $proxyPackage)
     {
+        $this->ensureMetaComposerRepositoriesExist();
+
         $this->proxyPackage = $proxyPackage;
 
         if ($proxyPackage->getRepository()->type !== 'path') {
