@@ -10,7 +10,7 @@ use Latus\Helpers\Paths;
 class PackageFileHandler
 {
 
-    protected Package $proxyPackage;
+    protected Package $package;
 
     public function __construct()
     {
@@ -39,14 +39,14 @@ class PackageFileHandler
 
     }
 
-    public function setPackage(Package $proxyPackage)
+    public function setPackage(Package $package)
     {
-        $this->proxyPackage = $proxyPackage;
+        $this->package = $package;
     }
 
     public function deleteFiles()
     {
-        File::deleteDirectory($this->proxyPackage->getInstallDir());
+        File::deleteDirectory($this->package->getInstallDir());
     }
 
     public function updateVersion()
@@ -55,7 +55,7 @@ class PackageFileHandler
 
         $data->require = json_decode('{}');
 
-        $data->require->{$this->proxyPackage->getActualName()} = $this->proxyPackage->getPackageModel()->target_version;
+        $data->require->{$this->package->getActualName()} = $this->package->getPackageModel()->target_version;
 
         $this->putFileContents(json_encode($data));
     }
@@ -64,7 +64,7 @@ class PackageFileHandler
     {
         $data = json_decode($this->getFileContents());
 
-        $repository = $this->proxyPackage->getRepository();
+        $repository = $this->package->getRepository();
         $data->repositories->{$repository->name}->{'type'} = $repository->type;
         $data->repositories->{$repository->name}->{'url'} = $repository->url;
 
@@ -73,12 +73,12 @@ class PackageFileHandler
 
     protected function getFileContents(): string
     {
-        return File::get($this->proxyPackage->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json');
+        return File::get($this->package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json');
     }
 
     protected function putFileContents(string $contents)
     {
-        File::put($this->proxyPackage->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json', $contents);
+        File::put($this->package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json', $contents);
     }
 
 }
