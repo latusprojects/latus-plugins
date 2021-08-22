@@ -27,7 +27,6 @@ class ThemeService
     ];
 
     public static array $update_validation_rules = [
-        'proxy_name' => 'sometimes|string|nullable',
         'status' => 'sometimes|integer|between:0,4',
         'repository_id' => 'sometimes|nullable|exists:composer_repositories,id',
         'target_version' => 'sometimes|string|min:1',

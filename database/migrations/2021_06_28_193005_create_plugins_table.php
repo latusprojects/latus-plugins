@@ -17,7 +17,6 @@ class CreatePluginsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name')->unique();
-            $table->string('proxy_name')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->foreignId('repository_id')->nullable();
             $table->string('target_version')->nullable();
