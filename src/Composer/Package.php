@@ -15,7 +15,6 @@ class Package
     public const PACKAGE_TYPE_PLUGIN = Plugin::class;
     public const PACKAGE_TYPE_THEME = Theme::class;
 
-    public const PREFIX = 'latus-package-';
     public const IGNORED_DEPENDENCIES = [
         'laravel/framework',
         'latusprojects/latus',
@@ -49,22 +48,9 @@ class Package
         return $this->model;
     }
 
-    public function getActualName(bool $formatted = false): string
-    {
-        return $formatted ? str_replace('/', '%%', $this->model->name) : $this->model->name;
-    }
-
     public function getName(bool $formatted = false): string
     {
-        $name = '';
-
-        if ($this->getRepository()->type === 'path') {
-            $name = $this->getActualName();
-        } else {
-            $name = self::PREFIX . $this->getActualName();
-        }
-
-        return $formatted ? str_replace('/', '%%', $name) : $name;
+        return $this->model->name;
     }
 
     public function getPackageType(): string
