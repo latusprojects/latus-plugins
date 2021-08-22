@@ -49,13 +49,24 @@ class PackageFileHandler
         File::deleteDirectory($this->package->getInstallDir());
     }
 
+    public function unRequire()
+    {
+        $data = json_decode($this->getFileContents());
+
+        $data->require = json_decode('{}');
+
+        unset($data->require->{$this->package->getName()});
+
+        $this->putFileContents(json_encode($data));
+    }
+
     public function updateVersion()
     {
         $data = json_decode($this->getFileContents());
 
         $data->require = json_decode('{}');
 
-        $data->require->{$this->package->getActualName()} = $this->package->getPackageModel()->target_version;
+        $data->require->{$this->package->getName()} = $this->package->getPackageModel()->target_version;
 
         $this->putFileContents(json_encode($data));
     }
