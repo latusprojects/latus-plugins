@@ -4,20 +4,19 @@
 namespace Latus\Plugins\Composer;
 
 
-use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 use Latus\Plugins\Exceptions\ComposerCLIException;
 
 class Conductor
 {
 
-    protected ProxyPackage $proxyPackage;
+    protected Package $package;
     protected bool $filesRemoved = false;
     protected bool $hadFailure = false;
 
     public function __construct(
-        protected CLInterface             $CLI,
-        protected ProxyPackageFileHandler $fileHandler,
+        protected CLInterface        $CLI,
+        protected PackageFileHandler $fileHandler,
     )
     {
     }
@@ -25,28 +24,61 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
-    public function removePackage(ProxyPackage $proxyPackage)
+    protected function ensureMetaComposerRepositoriesExist()
     {
 
-        $this->proxyPackage = $proxyPackage;
+        $this->failIfResultHasErrors($this->CLI->addRepository(
+            'latus-packages/plugins',
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath()),
+            true
+        ));
 
+        $this->failIfResultHasErrors($this->CLI->addRepository(
+            'latus-packages/themes',
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath()),
+            true
+        ));
+
+    }
+
+    /**
+     * @throws ComposerCLIException
+     */
+    protected function ensurePathComposerRepositoryExists()
+    {
+
+        $url = $this->package->getInstallDir(false);
+
+        $this->failIfResultHasErrors($this->CLI->addRepository(
+            $this->package->getName(),
+            'path',
+            str_replace(DIRECTORY_SEPARATOR, '/', $url),
+            true
+        ));
+    }
+
+    /**
+     * @throws ComposerCLIException
+     */
+    public function removePackage(Package $package)
+    {
         $this->CLI->setWorkingDir(Paths::basePath());
 
-        $removePackageResult = $this->CLI->removePackage($proxyPackage->getName());
-        $removeRepositoryResult = $this->CLI->removeRepository($proxyPackage->getName());
+        $this->ensureMetaComposerRepositoriesExist();
 
-        if ($this->hadFailure && !$this->filesRemoved) {
-            $this->filesRemoved = true;
+        $this->package = $package;
+
+        $this->fileHandler->setPackage($package);
+
+        $this->fileHandler->unRequire();
+
+        if ($package->getRepository()->type === 'path') {
+            $this->failIfResultHasErrors($this->CLI->removeRepository($package->getName()));
         }
 
-        $this->failIfResultHasErrors($removePackageResult);
-        $this->failIfResultHasErrors($removeRepositoryResult);
-
-
-        $this->fileHandler->setPackage($proxyPackage);
-        $this->fileHandler->deleteFiles();
-
-
+        $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
     }
 
     /**
@@ -54,71 +86,33 @@ class Conductor
      */
     public function removeRepository(string $repositoryName)
     {
+        $this->ensureMetaComposerRepositoriesExist();
+
         $this->CLI->setWorkingDir(Paths::basePath());
 
-        $removeRepositoryResult = $this->CLI->removeRepository($repositoryName);
-
-        $this->failIfResultHasErrors($removeRepositoryResult);
+        $this->failIfResultHasErrors($this->CLI->removeRepository($repositoryName));
     }
 
     /**
      * @throws ComposerCLIException
      */
-    public function installOrUpdatePackage(ProxyPackage $proxyPackage)
+    public function installOrUpdatePackage(Package $package)
     {
-        $this->proxyPackage = $proxyPackage;
+        $this->ensureMetaComposerRepositoriesExist();
 
-        if ($proxyPackage->getRepository()->type !== 'path') {
-            $this->fileHandler->setPackage($proxyPackage);
-            $this->fileHandler->buildFile();
-        }
-
-        $this->CLI->setWorkingDir($proxyPackage->getInstallDir());
-
-        $result = null;
-
-        if (!File::exists($proxyPackage->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.lock')) {
-            $result = $this->CLI->install();
-        } else {
-            $result = $this->CLI->update();
-        }
-
-        $this->failIfResultHasErrors($result);
+        $this->package = $package;
 
         $this->CLI->setWorkingDir(Paths::basePath());
 
-        $addRepositoryResult = $this->CLI->addRepository(
-            $proxyPackage->getName(),
-            'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', $proxyPackage->getRelativeInstallDir())
-        );
-
-        $this->failIfResultHasErrors($addRepositoryResult);
-    }
-
-    public function fetchLocalPackageInfo(string $packageType, string $packageName): array|null
-    {
-
-        $packagePathPrefix = match ($packageType) {
-            ProxyPackage::PACKAGE_TYPE_THEME => 'themes' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR,
-            ProxyPackage::PACKAGE_TYPE_PLUGIN => 'plugins' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR,
-        };
-
-        $packageComposerPath = $packagePathPrefix . $packageName . DIRECTORY_SEPARATOR . 'composer.json';
-
-        if (!file_exists($packageComposerPath) || !($composerContent = json_decode(File::get($packageComposerPath)))) {
-            return null;
+        if ($package->getRepository()->type === 'path') {
+            $this->ensurePathComposerRepositoryExists();
         }
 
-        return [
-            'name' => $composerContent->{'name'},
-            'version' => $composerContent->{'version'},
-            'author' => $composerContent->{'author'},
-            'authors' => (array)$composerContent->{'authors'},
-            'description' => $composerContent->{'description'},
-            'repositories' => (array)$composerContent->{'repositories'},
-        ];
+        $this->fileHandler->setPackage($package);
 
+        $this->fileHandler->updateVersion();
+
+        $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
     }
 
     /**
@@ -129,7 +123,7 @@ class Conductor
         if ($commandResult->getCode() !== CommandResult::CODE_OK) {
             $this->hadFailure = true;
             if (!$this->filesRemoved) {
-                $this->removePackage($this->proxyPackage);
+                $this->removePackage($this->package);
             }
             $exception = new ComposerCLIException();
             $exception->setCommandResult($commandResult);
