@@ -7,10 +7,10 @@ namespace Latus\Plugins\Composer;
 use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 
-class ProxyPackageFileHandler
+class PackageFileHandler
 {
 
-    protected ProxyPackage $proxyPackage;
+    protected Package $proxyPackage;
 
     public function __construct()
     {
@@ -38,7 +38,7 @@ class ProxyPackageFileHandler
 
     }
 
-    public function setPackage(ProxyPackage $proxyPackage)
+    public function setPackage(Package $proxyPackage)
     {
         $this->proxyPackage = $proxyPackage;
     }
@@ -84,7 +84,7 @@ class ProxyPackageFileHandler
     {
         $data = json_decode('{}');
         $data->name = $this->proxyPackage->getName();
-        $data->type = 'latus-proxy-' . ($this->proxyPackage->getPackageType() === ProxyPackage::PACKAGE_TYPE_PLUGIN ? 'plugin' : 'theme');
+        $data->type = 'latus-proxy-' . ($this->proxyPackage->getPackageType() === Package::PACKAGE_TYPE_PLUGIN ? 'plugin' : 'theme');
         $data->version = $this->proxyPackage->getPackageModel()->target_version;
         $data->require = json_decode('{}');
         $data->replace = json_decode('{}');
@@ -98,7 +98,7 @@ class ProxyPackageFileHandler
         $data->repositories->{$repository->name}->{'type'} = $repository->type;
         $data->repositories->{$repository->name}->{'url'} = $repository->url;
 
-        foreach (ProxyPackage::IGNORED_DEPENDENCIES as $IGNORED_DEPENDENCY) {
+        foreach (Package::IGNORED_DEPENDENCIES as $IGNORED_DEPENDENCY) {
             $data->replace->{$IGNORED_DEPENDENCY} = '*';
         }
 

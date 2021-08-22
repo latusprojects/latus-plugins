@@ -9,7 +9,7 @@ use Latus\Plugins\Models\ComposerRepository;
 use Latus\Plugins\Models\Plugin;
 use Latus\Plugins\Models\Theme;
 
-class ProxyPackage
+class Package
 {
 
     public const PACKAGE_TYPE_PLUGIN = Plugin::class;

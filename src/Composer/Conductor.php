@@ -11,13 +11,13 @@ use Latus\Plugins\Exceptions\ComposerCLIException;
 class Conductor
 {
 
-    protected ProxyPackage $proxyPackage;
+    protected Package $proxyPackage;
     protected bool $filesRemoved = false;
     protected bool $hadFailure = false;
 
     public function __construct(
-        protected CLInterface             $CLI,
-        protected ProxyPackageFileHandler $fileHandler,
+        protected CLInterface        $CLI,
+        protected PackageFileHandler $fileHandler,
     )
     {
     }
@@ -50,7 +50,7 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
-    public function removePackage(ProxyPackage $proxyPackage)
+    public function removePackage(Package $proxyPackage)
     {
         $this->ensureMetaComposerRepositoriesExist();
 
@@ -92,7 +92,7 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
-    public function installOrUpdatePackage(ProxyPackage $proxyPackage)
+    public function installOrUpdatePackage(Package $proxyPackage)
     {
         $this->ensureMetaComposerRepositoriesExist();
 
