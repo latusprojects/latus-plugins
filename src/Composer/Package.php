@@ -19,22 +19,6 @@ class Package
     public const NAME_TYPE_VENDOR = 'vendor';
     public const NAME_TYPE_PACKAGE = 'package';
 
-    public const IGNORED_DEPENDENCIES = [
-        'laravel/framework',
-        'latusprojects/latus',
-        'latusprojects/latus-collections',
-        'latusprojects/latus-composer-plugins',
-        'latusprojects/latus-plugins',
-        'latusprojects/latus-content',
-        'latusprojects/latus-helpers',
-        'latusprojects/latus-installer',
-        'latusprojects/latus-model-repositories',
-        'latusprojects/latus-permissions',
-        'latusprojects/latus-prioritized-providers',
-        'latusprojects/latus-settings',
-        'latusprojects/latus-ui'
-    ];
-
     public function __construct(
         protected ComposerRepository $composerRepository,
         protected Plugin|Theme       $model,
