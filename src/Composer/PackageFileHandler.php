@@ -25,6 +25,7 @@ class PackageFileHandler
         $fileContentArray = [
             'name' => '',
             'type' => 'meta',
+            'version' => '1.0',
             'require' => []
         ];
 
@@ -80,34 +81,4 @@ class PackageFileHandler
         File::put($this->proxyPackage->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json', $contents);
     }
 
-    public function buildFile()
-    {
-        $data = json_decode('{}');
-        $data->name = $this->proxyPackage->getName();
-        $data->type = 'latus-proxy-' . ($this->proxyPackage->getPackageType() === Package::PACKAGE_TYPE_PLUGIN ? 'plugin' : 'theme');
-        $data->version = $this->proxyPackage->getPackageModel()->target_version;
-        $data->require = json_decode('{}');
-        $data->replace = json_decode('{}');
-        $data->repositories = json_decode('{}');
-
-        $repository = $this->proxyPackage->getRepository();
-
-        $data->require->{$this->proxyPackage->getActualName()} = $this->proxyPackage->getPackageModel()->target_version;
-
-        $data->repositories->{$repository->name} = json_decode('{}');
-        $data->repositories->{$repository->name}->{'type'} = $repository->type;
-        $data->repositories->{$repository->name}->{'url'} = $repository->url;
-
-        foreach (Package::IGNORED_DEPENDENCIES as $IGNORED_DEPENDENCY) {
-            $data->replace->{$IGNORED_DEPENDENCY} = '*';
-        }
-
-        $contents = json_encode($data);
-
-        if (!File::exists($this->proxyPackage->getInstallDir())) {
-            File::makeDirectory($this->proxyPackage->getInstallDir(), 0755, true);
-        }
-
-        $this->putFileContents($contents);
-    }
 }
