@@ -15,6 +15,10 @@ class Package
     public const PACKAGE_TYPE_PLUGIN = Plugin::class;
     public const PACKAGE_TYPE_THEME = Theme::class;
 
+    public const NAME_TYPE_FULL = 'vendor-package';
+    public const NAME_TYPE_VENDOR = 'vendor';
+    public const NAME_TYPE_PACKAGE = 'package';
+
     public const IGNORED_DEPENDENCIES = [
         'laravel/framework',
         'latusprojects/latus',
@@ -48,9 +52,15 @@ class Package
         return $this->model;
     }
 
-    public function getName(bool $formatted = false): string
+    public function getName(string $type = self::NAME_TYPE_FULL): string
     {
-        return $this->model->name;
+        $fullName = $this->getPackageModel()->name;
+
+        return match ($type) {
+            self::NAME_TYPE_FULL => $fullName,
+            self::NAME_TYPE_VENDOR => explode('/', $fullName)[0],
+            self::NAME_TYPE_PACKAGE => explode('/', $fullName)[1]
+        };
     }
 
     public function getPackageType(): string
@@ -58,39 +68,24 @@ class Package
         return get_class($this->getPackageModel());
     }
 
-    public function getRelativeInstallDir(): string
+    protected function getDirPrefix(bool $absolute = true): string
     {
-        if ($this->getPackageType() === self::PACKAGE_TYPE_PLUGIN) {
-            if ($this->getRepository()->type === 'path') {
-                return 'plugins' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $this->getName(true);
-            }
-            return 'plugins' . DIRECTORY_SEPARATOR . $this->getName(true);
-        } else {
-            if ($this->getRepository()->type === 'path') {
-
-                return 'themes' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . $this->getName(true);
-            }
-            return 'themes' . DIRECTORY_SEPARATOR . $this->getName(true);
+        if ($absolute) {
+            return match ($this->getPackageType()) {
+                self::PACKAGE_TYPE_PLUGIN => Paths::pluginPath(),
+                self::PACKAGE_TYPE_THEME => Paths::themePath()
+            };
         }
+
+        return match ($this->getPackageType()) {
+            self::PACKAGE_TYPE_PLUGIN => 'plugins' . DIRECTORY_SEPARATOR,
+            self::PACKAGE_TYPE_THEME => 'themes' . DIRECTORY_SEPARATOR
+        };
     }
 
-    public function getInstallDir(): string
+    public function getInstallDir(bool $absolute = true): string
     {
-
-        if ($this->getPackageType() === self::PACKAGE_TYPE_PLUGIN) {
-            if ($this->getRepository()->type === 'path') {
-                return Paths::pluginPath('local' . DIRECTORY_SEPARATOR . $this->getName(true));
-            }
-            return Paths::pluginPath($this->getName(true));
-        } else {
-            if ($this->getRepository()->type === 'path') {
-
-                return Paths::themePath('local' . DIRECTORY_SEPARATOR . $this->getName(true));
-            }
-            return Paths::themePath($this->getName(true));
-        }
-
-
+        return $this->getDirPrefix($absolute) . $this->getName(self::NAME_TYPE_VENDOR) . DIRECTORY_SEPARATOR . $this->getName(self::NAME_TYPE_PACKAGE);
     }
 
 }
