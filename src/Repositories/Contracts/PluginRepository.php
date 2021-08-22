@@ -30,6 +30,4 @@ interface PluginRepository extends Repository
     public function getComposerRepository(Plugin $plugin): Model;
 
     public function setComposerRepository(Plugin $plugin, ComposerRepository $composerRepository);
-
-    public function rollbackMigrations(Plugin $plugin);
 }
