@@ -52,6 +52,14 @@ class Package
         return get_class($this->getPackageModel());
     }
 
+    public function getMetaPackageName(): string
+    {
+        return match ($this->getPackageType()) {
+            self::PACKAGE_TYPE_PLUGIN => 'latus-packages/plugins',
+            self::PACKAGE_TYPE_THEME => 'latus-packages/themes',
+        };
+    }
+
     protected function getDirPrefix(bool $absolute = true): string
     {
         if ($absolute) {
@@ -65,6 +73,11 @@ class Package
             self::PACKAGE_TYPE_PLUGIN => 'plugins' . DIRECTORY_SEPARATOR,
             self::PACKAGE_TYPE_THEME => 'themes' . DIRECTORY_SEPARATOR
         };
+    }
+
+    public function getMetaPackageDir(): string
+    {
+        return $this->getDirPrefix();
     }
 
     public function getInstallDir(bool $absolute = true): string
