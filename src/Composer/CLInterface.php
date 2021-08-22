@@ -67,8 +67,11 @@ class CLInterface
         ]);
     }
 
-    public function updatePackage(string $package, string $version): CommandResult
+    public function updatePackage(string $package, string $version = null): CommandResult
     {
+
+        $package = ($version ? '"' . $package . ':' . $version . '"' : '"' . $package . '"');
+
         return $this->runCommand('update', [
             '"' . $package . ':' . $version . '"',
             '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
