@@ -71,17 +71,6 @@ class PackageFileHandler
         $this->putFileContents(json_encode($data));
     }
 
-    public function updateRepository()
-    {
-        $data = json_decode($this->getFileContents());
-
-        $repository = $this->package->getRepository();
-        $data->repositories->{$repository->name}->{'type'} = $repository->type;
-        $data->repositories->{$repository->name}->{'url'} = $repository->url;
-
-        $this->putFileContents(json_encode($data));
-    }
-
     protected function getFileContents(): string
     {
         return File::get($this->package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.json');
