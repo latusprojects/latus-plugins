@@ -4,7 +4,6 @@
 namespace Latus\Plugins\Composer;
 
 
-use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 use Latus\Plugins\Exceptions\ComposerCLIException;
 
@@ -28,21 +27,19 @@ class Conductor
     protected function ensureMetaComposerRepositoriesExist()
     {
 
-        $addRepositoryResult = $this->CLI->addRepository(
+        $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/plugins',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath())
-        );
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath()),
+            true
+        ));
 
-        $this->failIfResultHasErrors($addRepositoryResult);
-
-        $addRepositoryResult = $this->CLI->addRepository(
+        $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/themes',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath())
-        );
-
-        $this->failIfResultHasErrors($addRepositoryResult);
+            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath()),
+            true
+        ));
 
     }
 
@@ -54,14 +51,12 @@ class Conductor
 
         $url = $this->package->getInstallDir(false);
 
-        $addRepositoryResult = $this->CLI->addRepository(
+        $this->failIfResultHasErrors($this->CLI->addRepository(
             $this->package->getName(),
             'path',
             str_replace(DIRECTORY_SEPARATOR, '/', $url),
             true
-        );
-
-        $this->failIfResultHasErrors($addRepositoryResult);
+        ));
     }
 
     /**
@@ -75,21 +70,15 @@ class Conductor
 
         $this->package = $package;
 
-        $removePackageResult = $this->CLI->removePackage($package->getName());
-        $removeRepositoryResult = $this->CLI->removeRepository($package->getName());
+        $this->fileHandler->setPackage($package);
 
-        if ($this->hadFailure && !$this->filesRemoved) {
-            $this->filesRemoved = true;
+        $this->fileHandler->unRequire();
+
+        if ($package->getRepository()->type === 'path') {
+            $this->failIfResultHasErrors($this->CLI->removeRepository($package->getName()));
         }
 
-        $this->failIfResultHasErrors($removePackageResult);
-        $this->failIfResultHasErrors($removeRepositoryResult);
-
-
-        $this->fileHandler->setPackage($package);
-        $this->fileHandler->deleteFiles();
-
-
+        $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
     }
 
     /**
@@ -101,9 +90,7 @@ class Conductor
 
         $this->CLI->setWorkingDir(Paths::basePath());
 
-        $removeRepositoryResult = $this->CLI->removeRepository($repositoryName);
-
-        $this->failIfResultHasErrors($removeRepositoryResult);
+        $this->failIfResultHasErrors($this->CLI->removeRepository($repositoryName));
     }
 
     /**
@@ -121,27 +108,11 @@ class Conductor
             $this->ensurePathComposerRepositoryExists();
         }
 
-        $this->CLI->setWorkingDir($package->getInstallDir());
+        $this->fileHandler->setPackage($package);
 
-        $result = null;
+        $this->fileHandler->updateVersion();
 
-        if (!File::exists($package->getInstallDir() . DIRECTORY_SEPARATOR . 'composer.lock')) {
-            $result = $this->CLI->install();
-        } else {
-            $result = $this->CLI->update();
-        }
-
-        $this->failIfResultHasErrors($result);
-
-        $this->CLI->setWorkingDir(Paths::basePath());
-
-        $addRepositoryResult = $this->CLI->addRepository(
-            $package->getName(),
-            'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', $package->getInstallDir(false))
-        );
-
-        $this->failIfResultHasErrors($addRepositoryResult);
+        $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
     }
 
     /**
