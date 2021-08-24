@@ -66,9 +66,9 @@ class Conductor
     {
         $this->CLI->setWorkingDir(Paths::basePath());
 
-        $this->ensureMetaComposerRepositoriesExist();
-
         $this->package = $package;
+
+        $this->ensureMetaComposerRepositoriesExist();
 
         $this->fileHandler->setPackage($package);
 
@@ -84,23 +84,11 @@ class Conductor
     /**
      * @throws ComposerCLIException
      */
-    public function removeRepository(string $repositoryName)
-    {
-        $this->ensureMetaComposerRepositoriesExist();
-
-        $this->CLI->setWorkingDir(Paths::basePath());
-
-        $this->failIfResultHasErrors($this->CLI->removeRepository($repositoryName));
-    }
-
-    /**
-     * @throws ComposerCLIException
-     */
     public function installOrUpdatePackage(Package $package)
     {
-        $this->ensureMetaComposerRepositoriesExist();
-
         $this->package = $package;
+
+        $this->ensureMetaComposerRepositoriesExist();
 
         $this->CLI->setWorkingDir(Paths::basePath());
 

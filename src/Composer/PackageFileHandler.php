@@ -26,14 +26,16 @@ class PackageFileHandler
             'name' => '',
             'type' => 'meta',
             'version' => '1.0',
-            'require' => []
+            'require' => json_decode('{}')
         ];
 
         if (!File::exists(Paths::pluginPath('composer.json'))) {
+            $fileContentArray['name'] = 'latus-packages/plugins';
             File::put(Paths::pluginPath('composer.json'), json_encode($fileContentArray['name'] = 'latus-packages/plugins'));
         }
 
         if (!File::exists(Paths::themePath('composer.json'))) {
+            $fileContentArray['name'] = 'latus-packages/themes';
             File::put(Paths::themePath('composer.json'), json_encode($fileContentArray['name'] = 'latus-packages/themes'));
         }
 
