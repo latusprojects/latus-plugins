@@ -30,14 +30,14 @@ class Conductor
         $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/plugins',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath()),
+            str_replace(DIRECTORY_SEPARATOR, '/', 'plugins'),
             true
         ));
 
         $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/themes',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath()),
+            str_replace(DIRECTORY_SEPARATOR, '/', 'themes'),
             true
         ));
 
