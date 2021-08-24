@@ -66,7 +66,9 @@ class PackageFileHandler
     {
         $data = json_decode($this->getFileContents());
 
-        $data->require = json_decode('{}');
+        if (!isset($data->require)) {
+            $data->require = json_decode('{}');
+        }
 
         $data->require->{$this->package->getName()} = $this->package->getPackageModel()->target_version;
 
