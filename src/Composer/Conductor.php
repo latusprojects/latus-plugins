@@ -114,6 +114,8 @@ class Conductor
         $this->fileHandler->updateVersion();
 
         $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
+
+        $this->failIfResultHasErrors($this->CLI->update());
     }
 
     /**
