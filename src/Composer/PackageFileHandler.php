@@ -24,8 +24,8 @@ class PackageFileHandler
 
         $fileContentArray = [
             'name' => '',
-            'type' => 'meta',
-            'version' => '1.0',
+            'type' => 'metapackage',
+            'version' => '1.0.0',
             'require' => json_decode('{}')
         ];
 
