@@ -4,6 +4,7 @@
 namespace Latus\Plugins\Composer;
 
 
+use Illuminate\Support\Facades\File;
 use Latus\Helpers\Paths;
 use Latus\Plugins\Exceptions\ComposerCLIException;
 
@@ -30,17 +31,27 @@ class Conductor
         $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/plugins',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::pluginPath()),
+            str_replace(DIRECTORY_SEPARATOR, '/', 'plugins'),
             true
         ));
 
         $this->failIfResultHasErrors($this->CLI->addRepository(
             'latus-packages/themes',
             'path',
-            str_replace(DIRECTORY_SEPARATOR, '/', Paths::themePath()),
+            str_replace(DIRECTORY_SEPARATOR, '/', 'themes'),
             true
         ));
 
+    }
+
+    protected function ensureMetaComposerPackagesAreRequired()
+    {
+        $data = json_decode(File::get(Paths::basePath('composer.json')));
+
+        $data->require->{'latus-packages/plugins'} = '1.0.0';
+        $data->require->{'latus-packages/themes'} = '1.0.0';
+
+        File::put(Paths::basePath('composer.json'), json_encode($data));
     }
 
     /**
@@ -69,6 +80,7 @@ class Conductor
         $this->package = $package;
 
         $this->ensureMetaComposerRepositoriesExist();
+        $this->ensureMetaComposerPackagesAreRequired();
 
         $this->fileHandler->setPackage($package);
 
@@ -89,6 +101,7 @@ class Conductor
         $this->package = $package;
 
         $this->ensureMetaComposerRepositoriesExist();
+        $this->ensureMetaComposerPackagesAreRequired();
 
         $this->CLI->setWorkingDir(Paths::basePath());
 
@@ -101,6 +114,8 @@ class Conductor
         $this->fileHandler->updateVersion();
 
         $this->failIfResultHasErrors($this->CLI->updatePackage($package->getMetaPackageName()));
+
+        $this->failIfResultHasErrors($this->CLI->update());
     }
 
     /**

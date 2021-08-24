@@ -24,8 +24,8 @@ class PackageFileHandler
 
         $fileContentArray = [
             'name' => '',
-            'type' => 'meta',
-            'version' => '1.0',
+            'type' => 'metapackage',
+            'version' => '1.0.0',
             'require' => json_decode('{}')
         ];
 
@@ -66,7 +66,9 @@ class PackageFileHandler
     {
         $data = json_decode($this->getFileContents());
 
-        $data->require = json_decode('{}');
+        if (!isset($data->require)) {
+            $data->require = json_decode('{}');
+        }
 
         $data->require->{$this->package->getName()} = $this->package->getPackageModel()->target_version;
 
