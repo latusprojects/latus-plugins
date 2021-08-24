@@ -81,7 +81,7 @@ class CLInterface
     public function addRepository(string $name, string $type, string $url, bool $symlink = false): CommandResult
     {
 
-        $options = '\'{"type": "' . $type . '", "url": "' . $url . '", "options": {"symlink": ' . $symlink . '}}\'';
+        $options = '\'{"type": "' . $type . '", "url": "' . $url . '"' . ($symlink ? ', "options": {"symlink": true}' : '') . '}\'';
 
         return $this->runCommand('config', [
             'repositories.' . $name,
