@@ -65,7 +65,7 @@ class ThemeRepository extends EloquentRepository implements ThemeRepositoryContr
         /**
          * @var Setting $setting
          */
-        $activeModules = unserialize($this->settingService->findByKey('active_modules'));
+        $activeModules = json_decode($this->settingService->findByKey('active_modules'), true);
 
         $activeModules[$moduleContract] = $theme->supports[$moduleContract];
 
