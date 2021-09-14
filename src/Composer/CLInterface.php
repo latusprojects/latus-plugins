@@ -26,6 +26,10 @@ class CLInterface
 
     protected function runCommand(string $command, array $arguments): CommandResult
     {
+        if (!defined('LATUS_COMPOSER')) {
+            define('LATUS_COMPOSER', true);
+        }
+
         $input = new StringInput($command . ' ' . implode(' ', $arguments));
 
         $output = new BufferedConsoleOutput();
