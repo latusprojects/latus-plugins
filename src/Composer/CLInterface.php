@@ -95,11 +95,17 @@ class CLInterface
         return $this->runCommand('require', $arguments);
     }
 
-    public function removePackage(string $package): CommandResult
+    public function removePackage(string $package, bool $install = true): CommandResult
     {
-        return $this->runCommand('remove', $this->arguments([
+        $arguments = $this->arguments([
             $package,
-        ]));
+        ]);
+
+        if (!$install) {
+            $arguments[] = '--no-install';
+        }
+
+        return $this->runCommand('remove', $arguments);
     }
 
     public function updatePackage(string $package, string $version = null): CommandResult
