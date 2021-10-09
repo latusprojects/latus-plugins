@@ -82,11 +82,17 @@ class CLInterface
         $this->currentWorkingDir = $dir;
     }
 
-    public function requirePackage(string $package, string $version): CommandResult
+    public function requirePackage(string $package, string $version, bool $install = true): CommandResult
     {
-        return $this->runCommand('require', $this->arguments([
+        $arguments = $this->arguments([
             '"' . $package . ':' . $version . '"',
-        ]));
+        ]);
+
+        if (!$install) {
+            $arguments[] = '--no-install';
+        }
+
+        return $this->runCommand('require', $arguments);
     }
 
     public function removePackage(string $package): CommandResult
