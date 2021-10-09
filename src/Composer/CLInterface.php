@@ -13,11 +13,31 @@ class CLInterface
 {
 
     protected static Application $composer;
+    protected array $globalArguments = [];
     protected string $currentWorkingDir;
 
     public function __construct()
     {
         $this->setWorkingDir(Paths::basePath());
+    }
+
+    public function setIsQuiet(bool $isQuiet)
+    {
+        if ($isQuiet) {
+            if (!in_array('--quiet', $this->globalArguments)) {
+                $this->globalArguments[] = '--quiet';
+            }
+            return;
+        }
+
+        if (in_array('--quiet', $this->globalArguments)) {
+            unset($this->globalArguments['--quiet']);
+        }
+    }
+
+    public function arguments(array $arguments = []): array
+    {
+        return $arguments + $this->globalArguments + ['--working-dir' => '"' . str_replace('\\', '/', $this->getWorkingDir()) . '"'];
     }
 
     public function getComposer(): Application
@@ -64,18 +84,16 @@ class CLInterface
 
     public function addPackage(string $package, string $version): CommandResult
     {
-        return $this->runCommand('require', [
+        return $this->runCommand('require', $this->arguments([
             '"' . $package . ':' . $version . '"',
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+        ]));
     }
 
     public function removePackage(string $package): CommandResult
     {
-        return $this->runCommand('remove', [
+        return $this->runCommand('remove', $this->arguments([
             $package,
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+        ]));
     }
 
     public function updatePackage(string $package, string $version = null): CommandResult
@@ -83,10 +101,9 @@ class CLInterface
 
         $package = ($version ? '"' . $package . ':' . $version . '"' : '"' . $package . '"');
 
-        return $this->runCommand('update', [
+        return $this->runCommand('update', $this->arguments([
             '"' . $package . ':' . $version . '"',
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+        ]));
     }
 
     public function addRepository(string $name, string $type, string $url, bool $symlink = false): CommandResult
@@ -94,33 +111,28 @@ class CLInterface
 
         $options = '\'{"type": "' . $type . '", "url": "' . $url . '"' . ($symlink ? ', "options": {"symlink": true}' : '') . '}\'';
 
-        return $this->runCommand('config', [
+        return $this->runCommand('config', $this->arguments([
             'repositories.' . $name,
             $options
-        ]);
+        ]));
     }
 
     public function removeRepository(string $name): CommandResult
     {
-        return $this->runCommand('config', [
+        return $this->runCommand('config', $this->arguments([
             '--unset',
-            'repositories.' . $name,
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+            'repositories.' . $name
+        ]));
     }
 
     public function update(): CommandResult
     {
-        return $this->runCommand('update', [
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+        return $this->runCommand('update', $this->arguments());
     }
 
     public function install(): CommandResult
     {
-        return $this->runCommand('install', [
-            '--working-dir="' . str_replace('\\', '/', $this->getWorkingDir()) . '"'
-        ]);
+        return $this->runCommand('install', $this->arguments());
     }
 
 }
