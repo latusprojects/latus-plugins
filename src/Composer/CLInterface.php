@@ -82,7 +82,7 @@ class CLInterface
         $this->currentWorkingDir = $dir;
     }
 
-    public function addPackage(string $package, string $version): CommandResult
+    public function requirePackage(string $package, string $version): CommandResult
     {
         return $this->runCommand('require', $this->arguments([
             '"' . $package . ':' . $version . '"',
