@@ -7,6 +7,7 @@ namespace Latus\Plugins\Composer;
 use Composer\Console\Application;
 use Illuminate\Console\BufferedConsoleOutput;
 use Latus\Helpers\Paths;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\StringInput;
 
 class CLInterface
@@ -24,20 +25,20 @@ class CLInterface
     public function setIsQuiet(bool $isQuiet)
     {
         if ($isQuiet) {
-            if (!in_array('--quiet', $this->globalArguments)) {
-                $this->globalArguments[] = '--quiet';
+            if (!isset($this->globalArguments['--quiet'])) {
+                $this->globalArguments['--quiet'] = true;
             }
             return;
         }
 
-        if (in_array('--quiet', $this->globalArguments)) {
+        if (isset($this->globalArguments['--quiet'])) {
             unset($this->globalArguments['--quiet']);
         }
     }
 
     public function arguments(array $arguments = []): array
     {
-        return $arguments + $this->globalArguments + ['--working-dir' => '"' . str_replace('\\', '/', $this->getWorkingDir()) . '"'];
+        return array_merge_recursive($arguments, $this->globalArguments, ['--working-dir' => str_replace('\\', '/', $this->getWorkingDir())]);
     }
 
     public function getComposer(): Application
@@ -57,7 +58,8 @@ class CLInterface
             define('LATUS_COMPOSER', true);
         }
 
-        $input = new StringInput($command . ' ' . implode(' ', $arguments));
+        $arguments = array_merge_recursive(['command' => $command], $arguments);
+        $input = new ArrayInput($arguments);
 
         $output = new BufferedConsoleOutput();
 
@@ -85,11 +87,13 @@ class CLInterface
     public function requirePackage(string $package, string $version, bool $install = true): CommandResult
     {
         $arguments = $this->arguments([
-            '"' . $package . ':' . $version . '"',
+            'packages' => [
+                $package . ':' . $version
+            ]
         ]);
 
         if (!$install) {
-            $arguments[] = '--no-install';
+            $arguments['--no-update'] = true;
         }
 
         return $this->runCommand('require', $arguments);
@@ -98,11 +102,13 @@ class CLInterface
     public function removePackage(string $package, bool $install = true): CommandResult
     {
         $arguments = $this->arguments([
-            $package,
+            'packages' => [
+                $package
+            ]
         ]);
 
         if (!$install) {
-            $arguments[] = '--no-install';
+            $arguments['--no-update'] = true;
         }
 
         return $this->runCommand('remove', $arguments);
@@ -114,7 +120,9 @@ class CLInterface
         $package = ($version ? '"' . $package . ':' . $version . '"' : '"' . $package . '"');
 
         return $this->runCommand('update', $this->arguments([
-            '"' . $package . ':' . $version . '"',
+            'packages' => [
+                $package . ':' . $version
+            ]
         ]));
     }
 
@@ -132,7 +140,7 @@ class CLInterface
     public function removeRepository(string $name): CommandResult
     {
         return $this->runCommand('config', $this->arguments([
-            '--unset',
+            '--unset' => true,
             'repositories.' . $name
         ]));
     }
