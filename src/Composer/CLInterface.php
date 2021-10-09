@@ -12,16 +12,23 @@ use Symfony\Component\Console\Input\StringInput;
 class CLInterface
 {
 
-    protected Application $composer;
+    protected static Application $composer;
     protected string $currentWorkingDir;
 
     public function __construct()
     {
         $this->setWorkingDir(Paths::basePath());
+    }
 
-        $this->composer = new Application();
-        $this->composer->setCatchExceptions(true);
-        $this->composer->setAutoExit(false);
+    public function getComposer(): Application
+    {
+        if (!isset($this->{'composer'})) {
+            self::$composer = new Application();
+            self::$composer->setCatchExceptions(true);
+            self::$composer->setAutoExit(false);
+        }
+
+        return self::$composer;
     }
 
     protected function runCommand(string $command, array $arguments): CommandResult
@@ -35,7 +42,7 @@ class CLInterface
         $output = new BufferedConsoleOutput();
 
         try {
-            $code = $this->composer->run($input, $output);
+            $code = $this->getComposer()->run($input, $output);
         } catch (\Exception $e) {
             return new CommandResult(CommandResult::CODE_EXECUTION_ERROR, 'There was an error executing composer. This may be due to missing or invalid permissions on system-level.');
         }
