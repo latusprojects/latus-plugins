@@ -8,7 +8,6 @@ use Composer\Console\Application;
 use Illuminate\Console\BufferedConsoleOutput;
 use Latus\Helpers\Paths;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\StringInput;
 
 class CLInterface
 {
@@ -96,6 +95,8 @@ class CLInterface
             $arguments['--no-update'] = true;
         }
 
+        $arguments['--no-scripts'] = true;
+
         return $this->runCommand('require', $arguments);
     }
 
@@ -108,7 +109,7 @@ class CLInterface
         ]);
 
         if (!$install) {
-            $arguments['--no-update'] = true;
+            $arguments['--no-install'] = true;
         }
 
         return $this->runCommand('remove', $arguments);
