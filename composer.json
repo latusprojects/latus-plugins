@@ -27,6 +27,9 @@
       "providers": [
         "Latus\\Plugins\\Providers\\PluginsServiceProvider"
       ]
+    },
+    "branch-alias": {
+      "dev-develop": "0.2.x-dev"
     }
   },
   "repositories": {
