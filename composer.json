@@ -11,7 +11,7 @@
   "require": {
     "php": "^8.0",
     "composer/composer": "^2.1.0",
-    "laravel/framework": "8.*",
+    "laravel/framework": "^9",
     "latusprojects/latus-model-repositories": "0.1.*",
     "latusprojects/latus-settings": "0.1.*",
     "latusprojects/latus-ui": "0.1.*",
@@ -27,15 +27,6 @@
       "providers": [
         "Latus\\Plugins\\Providers\\PluginsServiceProvider"
       ]
-    },
-    "branch-alias": {
-      "dev-develop": "0.2.x-dev"
-    }
-  },
-  "repositories": {
-    "0": {
-      "type": "composer",
-      "url": "https://latusprojects.repo.repman.io"
     }
   },
   "minimum-stability": "dev"
