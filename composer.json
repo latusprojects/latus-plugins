@@ -27,15 +27,6 @@
       "providers": [
         "Latus\\Plugins\\Providers\\PluginsServiceProvider"
       ]
-    },
-    "branch-alias": {
-      "dev-develop": "0.2.x-dev"
-    }
-  },
-  "repositories": {
-    "0": {
-      "type": "composer",
-      "url": "https://latusprojects.repo.repman.io"
     }
   },
   "minimum-stability": "dev"
